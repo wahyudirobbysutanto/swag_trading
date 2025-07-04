@@ -1,0 +1,15 @@
+flask
+pyodbc
+python-dotenv
+openai
+requests
+sqlparse>=0.4.4
+pandas 
+openpyxl
+yfinance
+numpy
+tabula-py
+pdfplumber 
+streamlit
+plotly
+matplotlib
