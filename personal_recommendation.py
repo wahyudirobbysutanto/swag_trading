@@ -6,15 +6,28 @@ def evaluate_position(last_close, buy_price, ema20):
     cut_loss_level = 0.95 * buy_price
     take_profit_level = 1.10 * buy_price
 
+    #
+
+s    # Status	Aksi Umum
+    # 💰 TP (naik)	Tahan / jual sebagian
+    # 💰 TP (turun)	Jual semua, tren melemah
+    # ⚠️ WARNING	Waspada, boleh jual konservatif
+    # 🚨 CUT LOSS	Jual sekarang
+    # 🕰️ HOLD	Biarkan dulu
+
+    #
+
     if last_close < cut_loss_level and last_close < ema20:
         result = "🚨 CUT LOSS"
-        color = "red"
+    elif last_close > take_profit_level and last_close < ema20:
+        result = "💰 TAKE PROFIT (turun)"
     elif last_close > take_profit_level and last_close > ema20:
-        result = "💰 TAKE PROFIT"
-        color = "green"
+        result = "💰 TAKE PROFIT (naik)"
+    elif last_close < ema20:
+        result = "⚠️ WARNING (di bawah EMA20)"
     else:
         result = "🕰️ HOLD"
-        color = "blue"
+
 
     return result, color
 
@@ -84,7 +97,7 @@ def show_personal_page():
                     int(latest['volume']),
                     int(latest['avg_volume']),
                     rekom,
-                    result.replace("🚨 ", "").replace("💰 ", "").replace("🕰️ ", ""),
+                    result.replace("🚨 ", "").replace("💰 ", "").replace("⚠️ ", "").replace("🕰️ ", ""),
                     ticker,
                     today,
                     tanggal
