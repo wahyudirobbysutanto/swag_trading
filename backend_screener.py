@@ -8,8 +8,10 @@ from dotenv import load_dotenv
 from db_connector import get_connection
 from datetime import datetime
 from scrap_idx import get_idx_tickers_from_excel
+from ai_module import get_ai_recommendation
 
 load_dotenv()
+
 
 def is_valid_breakout(df):
     if len(df) < 12:
@@ -33,9 +35,6 @@ def is_valid_breakout(df):
     # print('--------------------')
 
     return breakout_range_ok and volume_spike_ok
-
-
-
 
 def compute_rsi_tv_style(series, period=14):
     delta = series.diff()
@@ -78,7 +77,6 @@ def compute_rsi_tv_style(series, period=14):
 
     return rsi
 
-
 def custom_ema(series, period):
     ema = series.copy()
     sma = series.rolling(window=period).mean()
@@ -93,7 +91,6 @@ def custom_ema(series, period):
             ema.iloc[i] = (series.iloc[i] - ema.iloc[i-1]) * multiplier + ema.iloc[i-1]
     
     return ema
-
 
 # Hitung indikator teknikal
 def calculate_indicators(df):
@@ -111,7 +108,6 @@ def calculate_indicators(df):
     df['RSI'] = compute_rsi_tv_style(df['Close'], 14)
     df['AvgVolume10'] = df['Volume'].rolling(window=10).mean()
     return df
-
 
 def compute_rsi(series, period=14):
     delta = series.diff()
@@ -175,7 +171,6 @@ def is_swing_candidate(latest, prev):
 
     return 'no'
 
-
 # Proses utama
 def run_screener():
 
@@ -187,7 +182,7 @@ def run_screener():
     # tickers = ['INDF.JK']
     df_active = pd.read_sql("SELECT ticker FROM ActiveVolumeStocks WHERE active = 1", conn)
     tickers = [f"{t}.JK" for t in df_active['ticker'].tolist()]
-
+    # tickers = ['DIVA.JK']
 
     cursor = conn.cursor()
 
@@ -199,11 +194,11 @@ def run_screener():
 
         df = calculate_indicators(df)
         
-        print('--------------------')
-        print(ticker.replace(".JK", ""))
-        print('--------------------')
-        print(df)
-        print('--------------------')
+        # print('--------------------')
+        # print(ticker.replace(".JK", ""))
+        # print('--------------------')
+        # print(df)
+        # print('--------------------')
 
 
         # print(df)
@@ -249,13 +244,20 @@ def run_screener():
 
             # exit()
 
+            recommendation = ''
+            # if (status = 'yes'):
+            #     recommendation = get_ai_recommendation(ticker.replace(".JK", ""), latest.name.date(), round(float(latest['Close'].iloc[0]), 2), round(float(latest['EMA8'].iloc[0]), 2), round(float(latest['EMA20'].iloc[0]), 2), round(float(latest['EMA50'].iloc[0]), 2), round(float(latest['EMA200'].iloc[0]), 2), round(float(latest['RSI'].iloc[0]), 2), int(latest['Volume'].iloc[0]), int(latest['AvgVolume10'].iloc[0]), status)
+            
+            # print(recommendation)
+            # exit()
+
             
             # Simpan ke archive
             cursor.execute("""
                 INSERT INTO SwingScreeningArchive (
                     ticker, tanggal, harga, ema8, ema20, ema50, ema200,
-                    rsi, volume, avg_volume, status_rekomendasi
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    rsi, volume, avg_volume, status_rekomendasi, ai_reason
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 ticker.replace(".JK", ""),
                 latest.name.date(),
@@ -267,7 +269,8 @@ def run_screener():
                 round(float(latest['RSI'].iloc[0]), 2),
                 int(latest['Volume'].iloc[0]),
                 int(latest['AvgVolume10'].iloc[0]),
-                status
+                status,
+                recommendation
             ))
 
             # Simpan ke tabel utama (update or insert)

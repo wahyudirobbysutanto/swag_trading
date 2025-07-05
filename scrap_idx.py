@@ -4,11 +4,11 @@ def get_idx_tickers_from_excel(filepath='data/Daftar Saham.xlsx'):
     try:
         df = pd.read_excel(filepath)
         
-        # Pastikan kolom 'Kode' ada
-        if 'Kode' not in df.columns:
-            raise ValueError("Kolom 'Kode' tidak ditemukan di file Excel.")
+        # Pastikan kolom 'Code' ada
+        if 'Code' not in df.columns:
+            raise ValueError("Kolom 'Code' tidak ditemukan di file Excel.")
         
-        tickers = df['Kode'].dropna().astype(str).str.strip() + '.JK'
+        tickers = df['Code'].dropna().astype(str).str.strip() + '.JK'
         return tickers.tolist()
     
     except Exception as e:

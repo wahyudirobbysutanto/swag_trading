@@ -13,3 +13,4 @@ pdfplumber
 streamlit
 plotly
 matplotlib
+google-generativeai

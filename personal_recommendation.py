@@ -8,7 +8,7 @@ def evaluate_position(last_close, buy_price, ema20):
 
     #
 
-s    # Status	Aksi Umum
+    # Status	Aksi Umum
     # 💰 TP (naik)	Tahan / jual sebagian
     # 💰 TP (turun)	Jual semua, tren melemah
     # ⚠️ WARNING	Waspada, boleh jual konservatif
