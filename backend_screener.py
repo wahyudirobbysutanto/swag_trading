@@ -255,7 +255,7 @@ def run_screener():
             # Simpan ke archive
             cursor.execute("""
                 INSERT INTO SwingScreeningArchive (
-                    ticker, tanggal, harga, ema8, ema20, ema50, ema200,
+                    ticker, tanggal, harga, ema8, ema20, ema50,
                     rsi, volume, avg_volume, status_rekomendasi, ai_reason
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
@@ -265,7 +265,6 @@ def run_screener():
                 round(float(latest['EMA8'].iloc[0]), 2),
                 round(float(latest['EMA20'].iloc[0]), 2),
                 round(float(latest['EMA50'].iloc[0]), 2),
-                round(float(latest['EMA200'].iloc[0]), 2),
                 round(float(latest['RSI'].iloc[0]), 2),
                 int(latest['Volume'].iloc[0]),
                 int(latest['AvgVolume10'].iloc[0]),
